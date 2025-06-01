@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GenEdu - Басты бет</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Montserrat', 'Segoe UI', Verdana, sans-serif;
+      background: #f9fbfd;
+      margin: 0;
+      padding: 0;
+    }
+
+    header, footer {
+      background-color: #004d7a;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      animation: fadeInDown 1s ease-in-out both;
+    }
+
+    header h1 {
+      font-size: 3.5em;
+      margin: 0;
+    }
+
+    nav {
+      text-align: center;
+      background: #e8f0fe;
+      padding: 10px;
+      animation: fadeIn 1.2s ease-in-out both;
+    }
+
+    nav a {
+      margin: 10px;
+      padding: 10px 20px;
+      text-decoration: none;
+      background: white;
+      border-radius: 8px;
+      color: #007b8a;
+      font-weight: bold;
+      display: inline-block;
+      transition: 0.3s ease;
+      transform: scale(1);
+    }
+
+    nav a:hover {
+      background: #e0f7fa;
+      transform: scale(1.05);
+    }
+
+    .blurred-section {
+      position: relative;
+      background-image: url('https://avatars.mds.yandex.net/i?id=e8ebdf6b7b6ac0edd1b83764d60f1e81_l-5229243-images-thumbs&n=13');
+      background-size: cover;
+      background-position: center;
+      padding: 80px 20px;
+      margin: 0;
+      color: white;
+      text-align: center;
+      overflow: hidden;
+      animation: fadeInUp 1.4s ease-in-out both;
+    }
+
+    .blurred-section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      backdrop-filter: blur(10px);
+      background-color: rgba(0, 0, 0, 0.4);
+      z-index: 0;
+    }
+
+    .blurred-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .blurred-content h2 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    .blurred-content p {
+      font-size: 1.3em;
+      line-height: 1.6;
+    }
+
+    .about-section {
+      position: relative;
+      background-color: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(8px);
+      margin: 40px;
+      padding: 40px 20px;
+      border-radius: 16px;
+      text-align: center;
+      animation: fadeInUp 1.4s ease-in-out both;
+    }
+
+    .about-section h3 {
+      font-size: 2em;
+      margin-bottom: 15px;
+      color: #004d7a;
+    }
+
+    .about-section p {
+      font-size: 1.2em;
+      color: #333;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    footer {
+      font-size: 0.9em;
+    }
+
+    /* Анимациялар */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🧬GenEdu</h1>
+    <p>Тұқымқуалаушылық пен өзгергіштік бөлімін оқытуға арналған - сандық оқыту платформасы</p>
+  </header>
+
+  <nav>
+    <a href="theory.html">📘 Теориялық мәлімет</a>
+    <a href="tasks.html">🧪 Практикалық тапсырма</a>
+    <a href="tests.html">📊 Тест</a>
+	<a href="games/mendel.html">Интерактивті ойындар</a>
+    <a href="lab.html">🔬 Зертханалық жұмыс</a>
+    <a href="teachers.html">👩‍🏫 Мұғалімдерге</a>
+  </nav>
+
+  <main class="blurred-section">
+    <div class="blurred-content">
+      <h2>Қош келдіңіз!</h2>
+      <p>
+        Білімді сандық түрде меңгеруге арналған GenEdu платформасына қош келдіңіз.<br>
+        Жоғарыдағы бөлімдер арқылы өзіңізге қажетті материалды таңдаңыз.
+      </p>
+    </div>
+  </main>
+
+  <section class="about-section">
+    <h3>🧾 GenEdu платформасы туралы</h3>
+    <p>
+      GenEdu — бұл тұқымқуалаушылық пен өзгергіштік тақырыбын тереңірек меңгеруге арналған интерактивті сандық білім беру платформасы.
+      Бұл платформа оқушылар мен мұғалімдерге биология пәнін қызықты, көрнекі және қолжетімді етіп жеткізуге арналған.
+    </p>
+  <p>
+    Бұл сайттың авторы – Аблай Аружан Қайратқызы. 
+	Ғылыми жетекші - Джунусова Раушан Жексенбаевна.
+  </section>
+
+  <footer>
+    <p>&copy; 2025 GenEdu платформасы. Барлық құқықтар қорғалған.</p>
+  </footer>
+</body>
+</html>

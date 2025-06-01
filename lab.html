@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🔬 GenEdu - Интерактивті зертхана</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --main-color: #004d7a;
+      --light-bg: #f9fbfd;
+      --box-color: #e8f0fe;
+      --accent: #007b8a;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Verdana
+      background: var(--light-bg);
+      color: #222;
+    }
+
+    header, footer {
+      background-color: var(--main-color);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      background: var(--accent);
+      padding: 10px 0;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      margin: 5px 10px;
+      padding: 10px 18px;
+      background: white;
+      color: var(--main-color);
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      background: var(--light-bg);
+    }
+
+    main {
+      padding: 40px 20px;
+      max-width: 960px;
+      margin: auto;
+    }
+
+    .card {
+      background: var(--box-color);
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+      margin-bottom: 40px;
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1, h2 {
+      color: var(--main-color);
+      text-align: center;
+    }
+
+    select, button {
+      padding: 12px;
+      margin: 10px 5px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      transition: 0.3s;
+    }
+
+    select:focus, button:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 6px rgba(0,191,165,0.4);
+    }
+
+    button {
+      background-color: var(--main-color);
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #00796b;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      color: var(--main-color);
+    }
+
+    .external-link {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .external-link a {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+
+    table.punnett {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: auto;
+    }
+
+    table.punnett th, table.punnett td {
+      border: 2px solid var(--main-color);
+      padding: 12px 16px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    img.lab-img {
+      max-width: 100%;
+      display: block;
+      margin: 30px auto;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🔬 GenEdu - Интерактивті зертхана</h1>
+</header>
+
+<nav>
+  <a href="index.html">Басты бет</a>
+  <a href="tasks.html">🧪 Практикалық тапсырма</a>
+  <a href="tests.html">📊 Тест</a>
+  <a href="theory.html">📘 Теориялық мәлімет</a>
+  <a href="teachers.html">👩‍🏫 Мұғалімдерге</a>
+</nav>
+
+<main>
+  <div class="card">
+    <h2>👪 Punnett торы</h2>
+    <label>Ана генотипі:
+      <select id="motherGenotype">
+        <option value="AA">AA</option>
+        <option value="Aa">Aa</option>
+        <option value="aa">aa</option>
+      </select>
+    </label>
+    <label>Әке генотипі:
+      <select id="fatherGenotype">
+        <option value="AA">AA</option>
+        <option value="Aa">Aa</option>
+        <option value="aa">aa</option>
+      </select>
+    </label>
+    <button onclick="drawPunnettSquare()">Торды құру</button>
+    <div id="punnettResult"></div>
+    <div class="external-link">
+      <p>🔗 Қосымша зерттеу үшін: <a href="https://punnettsquare.org/" target="_blank">PunnettSquare.org</a></p>
+    </div>
+  </div>
+</main>
+
+<script>
+
+  function getGametes(genotype) {
+    if (genotype === "AA") return ["A", "A"];
+    if (genotype === "Aa") return ["A", "a"];
+    if (genotype === "aa") return ["a", "a"];
+    return [];
+  }
+
+  function drawPunnettSquare() {
+    const mother = document.getElementById("motherGenotype").value;
+    const father = document.getElementById("fatherGenotype").value;
+    const mGametes = getGametes(mother);
+    const fGametes = getGametes(father);
+    let html = '<table class="punnett"><tr><th></th>';
+    fGametes.forEach(g => html += `<th>${g}</th>`);
+    html += '</tr>';
+    mGametes.forEach(mg => {
+      html += `<tr><th>${mg}</th>`;
+      fGametes.forEach(fg => {
+        const child = (mg + fg).split('').sort().join('');
+        html += `<td>${child}</td>`;
+      });
+      html += '</tr>';
+    });
+    html += '</table>';
+    document.getElementById("punnettResult").innerHTML = html;
+  }
+
+  const ctx = document.getElementById('genotypeChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: ['AA', 'Aa', 'aa'],
+      datasets: [{
+        label: 'Генотип үлестері',
+        data: [25, 50, 25],
+        backgroundColor: ['#009688', '#4db6ac', '#b2dfdb'],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
+
+<div class="card">
+  <h2>🩸 Қан топтарын анықтау симуляциясы</h2>
+  <label>Анасының қан тобы:
+    <select id="motherBlood">
+      <option value="A">A</option>
+      <option value="B">B</option>
+      <option value="AB">AB</option>
+      <option value="O">O</option>
+    </select>
+  </label>
+  <label>Әкесінің қан тобы:
+    <select id="fatherBlood">
+      <option value="A">A</option>
+      <option value="B">B</option>
+      <option value="AB">AB</option>
+      <option value="O">O</option>
+    </select>
+  </label>
+  <button onclick="predictBloodType()">Мүмкін болатын қан топтарын анықтау</button>
+  <div class="result" id="bloodResult"></div>
+</div>
+
+<script>
+  function predictBloodType() {
+    const mother = document.getElementById("motherBlood").value;
+    const father = document.getElementById("fatherBlood").value;
+
+    // Қан топтарына сәйкес аллельдер
+    const getAlleles = (type) => {
+      switch(type) {
+        case 'A': return ['A', 'O'];
+        case 'B': return ['B', 'O'];
+        case 'AB': return ['A', 'B'];
+        case 'O': return ['O', 'O'];
+      }
+    };
+
+    const motherAlleles = getAlleles(mother);
+    const fatherAlleles = getAlleles(father);
+    const possible = new Set();
+
+    for (let m of motherAlleles) {
+      for (let f of fatherAlleles) {
+        // Аллельдерді сұрыптап қосу (мысалы AO немесе OA -> AO)
+        const pair = [m, f].sort().join('');
+        if (pair === 'AA' || pair === 'AO') possible.add('A');
+        else if (pair === 'BB' || pair === 'BO') possible.add('B');
+        else if (pair === 'AB') possible.add('AB');
+        else if (pair === 'OO') possible.add('O');
+      }
+    }
+
+    document.getElementById("bloodResult").innerHTML = `
+      <p>🧬 Балада болуы мүмкін қан топтары: <strong>${Array.from(possible).join(', ')}</strong></p>
+    `;
+  }
+</script>
+
+
+
+     <div class="card">
+  <h2>👁️ Көз түсін болжау калькуляторы</h2>
+  <p>Ата-аналардың көз түсін таңдап, балада қандай көз түсі болуы мүмкін екенін көріңіз.</p>
+
+  <label>Анасының көз түсі:
+    <select id="motherEyeColor">
+      <option value="brown">Қоңыр</option>
+      <option value="green">Жасыл</option>
+      <option value="blue">Көк</option>
+    </select>
+  </label>
+
+  <label>Әкесінің көз түсі:
+    <select id="fatherEyeColor">
+      <option value="brown">Қоңыр</option>
+      <option value="green">Жасыл</option>
+      <option value="blue">Көк</option>
+    </select>
+  </label>
+
+  <button onclick="predictEyeColor()">Болжау</button>
+  <div class="result" id="eyeColorResult"></div>
+</div>
+
+<script>
+  function predictEyeColor() {
+    const mother = document.getElementById("motherEyeColor").value;
+    const father = document.getElementById("fatherEyeColor").value;
+
+    let resultText = "";
+
+    if (mother === "brown" && father === "brown") {
+      resultText = "Қоңыр (75%), жасыл (18.75%), көк (6.25%)";
+    } else if ((mother === "brown" && father === "green") || (mother === "green" && father === "brown")) {
+      resultText = "Қоңыр (50%), жасыл (37.5%), көк (12.5%)";
+    } else if ((mother === "brown" && father === "blue") || (mother === "blue" && father === "brown")) {
+      resultText = "Қоңыр (50%), жасыл (0%), көк (50%)";
+    } else if (mother === "green" && father === "green") {
+      resultText = "Жасыл (75%), көк (25%)";
+    } else if ((mother === "green" && father === "blue") || (mother === "blue" && father === "green")) {
+      resultText = "Жасыл (50%), көк (50%)";
+    } else if (mother === "blue" && father === "blue") {
+      resultText = "Көк (99%), басқа түстер (өте сирек)";
+    } else {
+      resultText = "Дерек жеткіліксіз.";
+    }
+
+    document.getElementById("eyeColorResult").innerHTML = `
+      <p>🧬 Балада көз түсі ықтималдығы:</p>
+      <strong>${resultText}</strong>
+    `;
+  }
+</script>
+
+        
+      </div>
+<div class="card">
+  <h2>🩸 Rh-факторды болжау калькуляторы</h2>
+  <p>Ата-аналардың Rh-факторын таңдап, балада қандай Rh болуы мүмкін екенін көріңіз.</p>
+
+  <label>Анасының Rh-факторы:
+    <select id="motherRh">
+      <option value="+">Позитив (+)</option>
+      <option value="-">Негатив (-)</option>
+    </select>
+  </label>
+
+  <label>Әкесінің Rh-факторы:
+    <select id="fatherRh">
+      <option value="+">Позитив (+)</option>
+      <option value="-">Негатив (-)</option>
+    </select>
+  </label>
+
+  <button onclick="predictRhFactor()">Болжау</button>
+  <div class="result" id="rhResult"></div>
+  
+</div>
+<div class="card">
+  <h2>🎨 Дальтонизм ықтималдығы</h2>
+  <p>Ата-аналардың генетикалық статусы бойынша балада дальтонизмнің даму мүмкіндігін бағалау.</p>
+
+  <label>Анасының генетикалық статусы:
+    <select id="motherColorBlind">
+      <option value="XX">Дені сау (XX)</option>
+      <option value="Xx">Тасымалдаушы (Xx)</option>
+      <option value="xx">Ауру (xx)</option>
+    </select>
+  </label>
+
+  <label>Әкесінің генетикалық статусы:
+    <select id="fatherColorBlind">
+      <option value="XY">Дені сау (XY)</option>
+      <option value="xY">Ауру (xY)</option>
+    </select>
+  </label>
+
+  <button onclick="predictColorBlind()">Болжау</button>
+  <div class="result" id="colorBlindResult"></div>
+  
+</div>
+
+<script>
+  function predictColorBlind() {
+    const mother = document.getElementById("motherColorBlind").value;
+    const father = document.getElementById("fatherColorBlind").value;
+
+    let result = "";
+
+    if (mother === "XX" && father === "XY") {
+      result = "Барлық балалар сау болады.";
+    } else if (mother === "Xx" && father === "XY") {
+      result = "50% ұлдарда дальтонизм, 50% қыздар — тасымалдаушы.";
+    } else if (mother === "xx" && father === "XY") {
+      result = "Барлық ұлдар — дальтоник, барлық қыздар — тасымалдаушы.";
+    } else if (mother === "Xx" && father === "xY") {
+      result = "25% ұл — дальтоник, 25% қыз — ауру, 25% ұл — сау, 25% қыз — тасымалдаушы.";
+    } else {
+      result = "Күрделі комбинация. Генетикалық кеңес ұсынылады.";
+    }
+
+    document.getElementById("colorBlindResult").innerHTML = `
+      <p>🧬 Дальтонизм ықтималдығы:</p>
+      <strong>${result}</strong>
+    `;
+  }
+</script>
+
+<script>
+  function predictRhFactor() {
+    const mother = document.getElementById("motherRh").value;
+    const father = document.getElementById("fatherRh").value;
+
+    let result = "";
+
+    if (mother === "+" && father === "+") {
+      result = "Баланың Rh-факторы: 75% оң (+), 25% теріс (−)";
+    } else if ((mother === "+" && father === "-") || (mother === "-" && father === "+")) {
+      result = "Баланың Rh-факторы: 50% оң (+), 50% теріс (−)";
+    } else if (mother === "-" && father === "-") {
+      result = "Баланың Rh-факторы: 100% теріс (−)";
+    } else {
+      result = "Белгісіз комбинация.";
+    }
+
+    document.getElementById("rhResult").innerHTML = `
+      <p>🧬 Балада Rh-фактордың ықтималдығы:</p>
+      <strong>${result}</strong>
+    `;
+  }
+</script>
+
+      <!-- Hair Color -->
+      <div class="card">
+  <h2>💇‍♀️ Шаш түсін болжау калькуляторы</h2>
+  <p>Ата-аналардың шаш түсін таңдап, балада қандай шаш түсі болуы мүмкін екенін көріңіз.</p>
+
+  <label>Анасының шаш түсі:
+    <select id="motherHairColor">
+      <option value="black">Қара</option>
+      <option value="brown">Қоңыр</option>
+      <option value="blonde">Сары</option>
+      <option value="red">Қызыл</option>
+    </select>
+  </label>
+
+  <label>Әкесінің шаш түсі:
+    <select id="fatherHairColor">
+      <option value="black">Қара</option>
+      <option value="brown">Қоңыр</option>
+      <option value="blonde">Сары</option>
+      <option value="red">Қызыл</option>
+    </select>
+  </label>
+
+  <button onclick="predictHairColor()">Болжау</button>
+  <div class="result" id="hairColorResult"></div>
+  
+</div>
+
+<script>
+  function predictHairColor() {
+    const mother = document.getElementById("motherHairColor").value;
+    const father = document.getElementById("fatherHairColor").value;
+
+    let result = "";
+
+    // Негізделген қарапайым генетикалық логика
+    if (mother === "black" && father === "black") {
+      result = "Балада қара шаштың ықтималдығы өте жоғары.";
+    } else if ((mother === "black" && father === "brown") || (mother === "brown" && father === "black")) {
+      result = "Қара немесе қоңыр шаш – 50/50.";
+    } else if ((mother === "black" && father === "blonde") || (mother === "blonde" && father === "black")) {
+      result = "Қара (75%) немесе сары (25%) шаш болуы мүмкін.";
+    } else if (mother === "brown" && father === "brown") {
+      result = "Қоңыр шаш – жоғары ықтималдық.";
+    } else if ((mother === "brown" && father === "blonde") || (mother === "blonde" && father === "brown")) {
+      result = "Қоңыр немесе сары шаш болуы мүмкін.";
+    } else if (mother === "blonde" && father === "blonde") {
+      result = "Сары шаш ықтималдығы жоғары.";
+    } else if (mother === "red" || father === "red") {
+      result = "Қызыл шаш рецессивті — екеуі де алып жүрсе, қызыл шаш мүмкін.";
+    } else {
+      result = "Ықтимал шаш түстері аралас болуы мүмкін.";
+    }
+
+    document.getElementById("hairColorResult").innerHTML = `
+      <p>🧬 Балада шаш түсі:</p>
+      <strong>${result}</strong>
+    `;
+  }
+</script>
+
+        
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 GenEdu. Барлық құқықтар қорғалған.</p>
+  </footer>
+
+  <script>
+    // Барлық JavaScript функциялар осында орналастырылады (predictBloodType, drawPunnettSquare, т.б.)
+  </script>
+</body>
+</html>
